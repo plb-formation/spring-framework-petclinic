@@ -1,3 +1,4 @@
+// exemple d'agent utilisant une image docker
 pipeline
 {
     agent any
