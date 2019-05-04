@@ -11,6 +11,14 @@ pipeline {
               sh "mvn clean package checkstyle:checkstyle"
            }
         }
+        stage('Sonarqube') {
+           steps {
+               withSonarQubeEnv('SonarQube') {
+                sh "mvn  clean package sonar:sonar -Dsonar.host_url=$SONAR_HOST_URL "
+                }
+           }
+        }
+
     }
     post {
             always {
