@@ -11,10 +11,10 @@ pipeline {
               sh "mvn clean package checkstyle:checkstyle"
            }
         }
-        post {
+    }
+    post {
             always {
                 archiveArtifacts artifacts:'**/target/*.war', fingerprint: true
             }
         }
-    }
 }
