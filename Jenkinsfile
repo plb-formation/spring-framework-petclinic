@@ -1,23 +1,22 @@
-// exemple d'agent utilisant une image docker contenant un version
-// de maven
-pipeline
-{
+pipeline {
     agent any
-    stages
-    {
-        stage ( 'Maven Install')
-        {
-            agent
-            {
-                docker
-                {
-                image 'maven:3.5.0'
-                }
-            }
-            steps
-            {
-                sh 'mvn clean install'
-            }
+
+    tools {
+        maven "maven 3.6"
+    }
+
+    stages {
+        stage('Build') {
+           steps{
+              // Run the maven build
+              sh "mvn clean package"
+           }
+        }
+        stage('Checkstyle') {
+           steps{
+              // Run the maven build with checkstyle
+              sh "mvn clean package checkstyle:checkstyle"
+           }
         }
     }
 }
