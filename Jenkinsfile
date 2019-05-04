@@ -1,28 +1,35 @@
 pipeline {
     agent any
-
     tools {
         maven "maven 3.6"
     }
-    stages {
-        stage('Checkstyle') {
-           steps{
-              // Run the maven build with checkstyle
-              sh "mvn clean package checkstyle:checkstyle"
-           }
-        }
-        stage('Sonarqube') {
-           steps {
-               withSonarQubeEnv('SonarQube') {
-                sh "mvn  clean package sonar:sonar -Dsonar.host_url=$SONAR_HOST_URL "
-                }
-           }
-        }
-
+    options {
+        parallelsAlwaysFailFast()
     }
-    post {
-            always {
-                archiveArtifacts artifacts:'**/target/*.war', fingerprint: true
+    stages {
+        stage('Non-Parallel Stage') {
+            steps {
+                echo 'This stage will be executed first.'
             }
         }
+        stage('Parallel Stage') {
+            parallel {
+                   stage('Checkstyle') {
+                        steps{
+                            // Run the maven build with checkstyle
+                            sh "mvn clean package checkstyle:checkstyle"
+                         }
+                     }
+                    stage('Sonarqube') {
+                        steps {
+                            withSonarQubeEnv('SonarQube') {
+                            ws('/sonar/workspace'){
+                                sh "mvn  clean package sonar:sonar -Dsonar.host_url=$SONAR_HOST_URL "
+                            }
+                         }
+                    }
+                }
+            }
+        }
+    }
 }
