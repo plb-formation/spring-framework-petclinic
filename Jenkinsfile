@@ -1,4 +1,5 @@
-// exemple d'agent utilisant une image docker
+// exemple d'agent utilisant une image docker contenant un version
+// de maven
 pipeline
 {
     agent any
