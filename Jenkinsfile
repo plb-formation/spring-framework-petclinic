@@ -23,6 +23,9 @@ pipeline {
                     stage('Sonarqube') {
                         steps {
                             withSonarQubeEnv('SonarQube') {
+                            dir('/sonar/workspace'){
+                               checkout scm
+                            }
                             ws('/sonar/workspace'){
                                 sh "mvn  clean package sonar:sonar -Dsonar.host_url=$SONAR_HOST_URL "
                             }
